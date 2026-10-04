@@ -24,7 +24,8 @@
     ],
     "files": [
       "dist/client.js",
-      "dist/index.html"
+      "dist/index.html",
+      "dist/fonts/**"
     ],
     "exports": [
       "notify",
