@@ -119,7 +119,9 @@ Notify.notify(player, {
   text: "The item has been added to your inventory.",
   position: "bottom_large",
   design: "rs_min",
-  duration: 4500
+  duration: 4500,
+  titleColor: "#D4AF37",
+  textColor: "#FFFFFF"
 });
 ```
 
@@ -137,6 +139,8 @@ interface NotifyOptions {
   design?: NotifyDesign;
   duration?: number;
   richText?: boolean;
+  titleColor?: string;
+  textColor?: string;
 }
 ```
 
@@ -152,6 +156,8 @@ interface NotifyOptions {
 | `design` | `NotifyDesign` | Visual style |
 | `duration` | `number` | Visible duration in milliseconds. Use `0` for persistent notifications |
 | `richText` | `boolean` | Enables the supported limited HTML formatting in the notification body |
+| `titleColor` | `string` | Optional CSS color applied to the notification title |
+| `textColor` | `string` | Optional CSS color applied to the notification body |
 
 ## Compact notify() Syntax
 
@@ -164,7 +170,9 @@ Notify.notify(
   "The item has been added to your inventory.",
   "bottom_large",
   "rs_min",
-  4500
+  4500,
+  "#D4AF37",
+  "#FFFFFF"
 );
 ```
 
@@ -177,9 +185,31 @@ text
 position
 design
 duration
+titleColor
+textColor
 ```
 
 The compact API automatically enables supported rich-text formatting.
+
+## Custom Colors
+
+Each notification can override the title and body colors independently.
+
+```ts
+Notify.notify(player, {
+  title: "Quest Updated",
+  text: "Return to Hogwarts.",
+  position: "top_center",
+  design: "rs_min",
+  duration: 5000,
+  titleColor: "#D4AF37",
+  textColor: "#F4F1E8"
+});
+```
+
+Any CSS color value supported by the embedded browser can be used, including hexadecimal, RGB, HSL, and named colors. Invalid values are ignored and the default notification color is preserved.
+
+Colors can also be supplied through the compact API as the final two optional arguments.
 
 ## Persistent Notifications
 
