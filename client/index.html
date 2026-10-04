@@ -61,7 +61,7 @@ body {
   line-height: 1.35;
 }
 
-.redm {
+.rs {
   background:
     linear-gradient(217deg, rgba(0, 0, 0, .8), rgba(255, 0, 0, 0) 70.71%),
     linear-gradient(127deg, rgba(0, 0, 0, .8), rgba(0, 255, 0, 0) 70.71%),
@@ -69,22 +69,22 @@ body {
   letter-spacing: 2px;
 }
 
-.redm_min {
+.rs_min {
   background: transparent;
   letter-spacing: 2px;
 }
 
-.redm_3d {
+.rs_3d {
   background: transparent;
   transform: perspective(500px) rotateY(15deg);
 }
 
-.redm_kill,
-.redm_prompt {
+.rs_kill,
+.rs_prompt {
   background: transparent;
 }
 
-.redm_kill .text::before {
+.rs_kill .text::before {
   content: "☠";
   display: inline-block;
   margin-right: 10px;
@@ -93,7 +93,7 @@ body {
   animation: rotating 2s linear infinite;
 }
 
-.redm_prompt .text::before {
+.rs_prompt .text::before {
   content: "?";
   display: inline-grid;
   place-items: center;
@@ -248,7 +248,7 @@ body {
       "notification " +
       (payload.position || "bottom_large") +
       " " +
-      (payload.design || "redm_min");
+      (payload.design || "rs_min");
 
     notification.dataset.id = String(payload.id || "");
 
