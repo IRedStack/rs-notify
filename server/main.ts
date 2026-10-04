@@ -29,6 +29,8 @@ function notify(
   position?: NotifyPosition,
   design?: NotifyDesign,
   duration?: number,
+  titleColor?: string,
+  textColor?: string,
 ): string | null {
   if (typeof input === "string") {
     return send(player, {
@@ -38,6 +40,8 @@ function notify(
       design,
       duration,
       richText: true,
+      titleColor,
+      textColor,
     });
   }
 
