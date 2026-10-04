@@ -65,16 +65,16 @@ function clearAll(player: PlayerLike): boolean {
 }
 
 const TEST_DESIGNS: NotifyDesign[] = [
-  "redm",
-  "redm_min",
-  "redm_3d",
-  "redm_kill",
-  "redm_prompt",
+  "rs",
+  "rs_min",
+  "rs_3d",
+  "rs_kill",
+  "rs_prompt",
 ];
 
 function demo(player: PlayerLike, design: NotifyDesign): void {
   const base: NotifyOptions = {
-    title: design === "redm_kill" ? "" : "Simple Notif",
+    title: design === "rs_kill" ? "" : "Simple Notif",
     text: "Your message here",
     position: "bottom_large",
     design,
@@ -82,17 +82,17 @@ function demo(player: PlayerLike, design: NotifyDesign): void {
     richText: true,
   };
 
-  if (design === "redm_min") {
+  if (design === "rs_min") {
     base.duration = 9500;
   }
 
-  if (design === "redm_kill") {
+  if (design === "rs_kill") {
     base.position = "center_right";
     base.text = "Notification <b>kill</b> example with animations";
     base.duration = 4000;
   }
 
-  if (design === "redm_prompt") {
+  if (design === "rs_prompt") {
     base.title = "Tutorial";
     base.position = "top_center";
     base.text = "Open the menu with <b>SPACEBAR</b> key";
@@ -107,7 +107,7 @@ function runTestNotification(player: PlayerLike, rawArgs: unknown): void {
     ? rawArgs.map((value) => String(value).toLowerCase())
     : [];
 
-  const mode = args[0] ?? "redm_min";
+  const mode = args[0] ?? "rs_min";
 
   if (mode === "all") {
     TEST_DESIGNS.forEach((design, index) => {
@@ -119,9 +119,9 @@ function runTestNotification(player: PlayerLike, rawArgs: unknown): void {
   if (!TEST_DESIGNS.includes(mode as NotifyDesign)) {
     send(player, {
       title: "RS Notify",
-      text: "Uso: /testnotify <redm|redm_min|redm_3d|redm_kill|redm_prompt|all>",
+      text: "Uso: /testnotify <rs|rs_min|rs_3d|rs_kill|rs_prompt|all>",
       position: "bottom_large",
-      design: "redm_min",
+      design: "rs_min",
       duration: 6000,
     });
     return;
