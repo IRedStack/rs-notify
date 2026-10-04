@@ -4,6 +4,14 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
+@font-face {
+  font-family: "MilesdaneTrial";
+  src: url("./fonts/MilesdaneTrial.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+}
+
 * { box-sizing: border-box; }
 
 html,
@@ -18,7 +26,7 @@ body {
 }
 
 body {
-  font-family: "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+  font-family: "MilesdaneTrial", "Arial Narrow", Arial, sans-serif;
   pointer-events: none;
 }
 
@@ -46,7 +54,7 @@ body {
 }
 
 .notification .title {
-  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-family: "MilesdaneTrial", Impact, "Arial Narrow Bold", sans-serif;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -56,7 +64,7 @@ body {
 
 .notification .text {
   margin-top: .35rem;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "MilesdaneTrial", Arial, Helvetica, sans-serif;
   font-size: 1.1vw;
   line-height: 1.35;
 }
