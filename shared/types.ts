@@ -1,40 +1,41 @@
-export type NotifyType = "info" | "success" | "warning" | "error" | "neutral";
+export type NotifyDesign =
+  | "redm"
+  | "redm_min"
+  | "redm_3d"
+  | "redm_kill"
+  | "redm_prompt";
 
 export type NotifyPosition =
+  | "top_large"
   | "top_left"
-  | "top_center"
   | "top_right"
+  | "top_center"
+  | "center_large"
+  | "center_right"
   | "center_left"
   | "center_center"
-  | "center_right"
+  | "bottom_large"
+  | "bottom_right"
   | "bottom_left"
-  | "bottom_center"
-  | "bottom_right";
+  | "bottom_center";
 
 export interface NotifyOptions {
   id?: string;
   title?: string;
-  message: string;
-  type?: NotifyType;
+  text?: string;
+  message?: string;
   position?: NotifyPosition;
+  design?: NotifyDesign;
   duration?: number;
-  icon?: string;
-  progress?: boolean;
-  dedupeKey?: string;
+  richText?: boolean;
 }
 
 export interface NotifyPayload {
   id: string;
   title: string;
-  message: string;
-  type: NotifyType;
+  text: string;
   position: NotifyPosition;
+  design: NotifyDesign;
   duration: number;
-  icon?: string;
-  progress: boolean;
-  dedupeKey?: string;
-}
-
-export interface ClearPayload {
-  id?: string;
+  richText: boolean;
 }
