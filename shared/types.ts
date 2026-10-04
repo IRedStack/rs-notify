@@ -1,9 +1,9 @@
 export type NotifyDesign =
-  | "redm"
-  | "redm_min"
-  | "redm_3d"
-  | "redm_kill"
-  | "redm_prompt";
+  | "rs"
+  | "rs_min"
+  | "rs_3d"
+  | "rs_kill"
+  | "rs_prompt";
 
 export type NotifyPosition =
   | "top_large"
