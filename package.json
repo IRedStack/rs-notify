@@ -1,0 +1,38 @@
+{
+  "name": "rs-notify",
+  "version": "0.1.0",
+  "private": true,
+  "author": "RedStack",
+  "description": "Standalone notification system for HogwartsMP/MafiaHub resources.",
+  "license": "UNLICENSED",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "esbuild server/main.ts --bundle --platform=node --target=node22 --format=cjs --outfile=dist/server.js --legal-comments=inline && esbuild client/main.ts --bundle --platform=browser --target=es2022 --format=iife --outfile=dist/client.js --legal-comments=inline && node scripts/copy-static.mjs",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "esbuild": "^0.25.12",
+    "typescript": "^5.9.3"
+  },
+  "mafiahub": {
+    "serverScripts": [
+      "dist/server.js"
+    ],
+    "clientScripts": [
+      "dist/client.js"
+    ],
+    "files": [
+      "dist/client.js",
+      "dist/index.html"
+    ],
+    "exports": [
+      "notify",
+      "broadcast",
+      "clear",
+      "clearAll"
+    ],
+    "errorBehavior": "stop",
+    "priority": -350
+  }
+}
