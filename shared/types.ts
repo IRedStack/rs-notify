@@ -28,6 +28,8 @@ export interface NotifyOptions {
   design?: NotifyDesign;
   duration?: number;
   richText?: boolean;
+  titleColor?: string;
+  textColor?: string;
 }
 
 export interface NotifyPayload {
@@ -38,4 +40,6 @@ export interface NotifyPayload {
   design: NotifyDesign;
   duration: number;
   richText: boolean;
+  titleColor?: string;
+  textColor?: string;
 }
