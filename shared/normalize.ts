@@ -1,11 +1,11 @@
 import type { NotifyDesign, NotifyOptions, NotifyPayload, NotifyPosition } from "./types";
 
 const DESIGNS = new Set<NotifyDesign>([
-  "redm",
-  "redm_min",
-  "redm_3d",
-  "redm_kill",
-  "redm_prompt",
+  "rs",
+  "rs_min",
+  "rs_3d",
+  "rs_kill",
+  "rs_prompt",
 ]);
 
 const POSITIONS = new Set<NotifyPosition>([
@@ -71,7 +71,7 @@ export function normalizeNotify(input: NotifyOptions): NotifyPayload {
 
   const design = DESIGNS.has(input.design as NotifyDesign)
     ? (input.design as NotifyDesign)
-    : "redm_min";
+    : "rs_min";
 
   const rawDuration = Number(input.duration);
   const duration = Number.isFinite(rawDuration)
