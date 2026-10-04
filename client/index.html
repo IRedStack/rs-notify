@@ -264,6 +264,11 @@ body {
       var title = document.createElement("div");
       title.className = "title";
       title.textContent = String(payload.title);
+
+      if (payload.titleColor && CSS.supports("color", String(payload.titleColor))) {
+        title.style.color = String(payload.titleColor);
+      }
+
       notification.appendChild(title);
     }
 
@@ -273,6 +278,10 @@ body {
 
       if (payload.richText) setLimitedRichText(text, payload.text);
       else text.textContent = String(payload.text);
+
+      if (payload.textColor && CSS.supports("color", String(payload.textColor))) {
+        text.style.color = String(payload.textColor);
+      }
 
       notification.appendChild(text);
     }
