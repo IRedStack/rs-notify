@@ -1,10 +1,26 @@
-import type { NotifyOptions, NotifyPayload, NotifyPosition, NotifyType } from "./types";
+import type { NotifyDesign, NotifyOptions, NotifyPayload, NotifyPosition } from "./types";
 
-const TYPES = new Set<NotifyType>(["info", "success", "warning", "error", "neutral"]);
+const DESIGNS = new Set<NotifyDesign>([
+  "redm",
+  "redm_min",
+  "redm_3d",
+  "redm_kill",
+  "redm_prompt",
+]);
+
 const POSITIONS = new Set<NotifyPosition>([
-  "top_left", "top_center", "top_right",
-  "center_left", "center_center", "center_right",
-  "bottom_left", "bottom_center", "bottom_right",
+  "top_large",
+  "top_left",
+  "top_right",
+  "top_center",
+  "center_large",
+  "center_right",
+  "center_left",
+  "center_center",
+  "bottom_large",
+  "bottom_right",
+  "bottom_left",
+  "bottom_center",
 ]);
 
 let sequence = 0;
@@ -14,55 +30,61 @@ function nextId(): string {
   return `rsn-${Date.now().toString(36)}-${sequence.toString(36)}`;
 }
 
-function cleanText(value: unknown, fallback = ""): string {
-  if (value === null || value === undefined) return fallback;
-  return String(value).trim().slice(0, 600);
+function clean(value: unknown, max = 1600): string {
+  if (value === null || value === undefined) return "";
+  return String(value).trim().slice(0, max);
 }
 
 export function parseInput(raw: unknown): NotifyOptions | null {
   let value = raw;
+
   if (typeof value === "string") {
-    try { value = JSON.parse(value); } catch { return null; }
+    try {
+      value = JSON.parse(value);
+    } catch {
+      return null;
+    }
   }
 
   if (!value || typeof value !== "object") return null;
+
   const input = value as Partial<NotifyOptions>;
-  const message = cleanText(input.message);
-  if (!message) return null;
+  const text = clean(input.text ?? input.message);
+
+  if (!text && !clean(input.title)) return null;
 
   return {
-    id: cleanText(input.id) || undefined,
-    title: cleanText(input.title) || undefined,
-    message,
-    type: input.type,
+    id: clean(input.id) || undefined,
+    title: clean(input.title, 300) || undefined,
+    text,
     position: input.position,
+    design: input.design,
     duration: Number(input.duration),
-    icon: cleanText(input.icon) || undefined,
-    progress: input.progress,
-    dedupeKey: cleanText(input.dedupeKey) || undefined,
+    richText: input.richText === true,
   };
 }
 
 export function normalizeNotify(input: NotifyOptions): NotifyPayload {
-  const type = TYPES.has(input.type as NotifyType) ? (input.type as NotifyType) : "info";
   const position = POSITIONS.has(input.position as NotifyPosition)
     ? (input.position as NotifyPosition)
-    : "top_right";
+    : "bottom_large";
+
+  const design = DESIGNS.has(input.design as NotifyDesign)
+    ? (input.design as NotifyDesign)
+    : "redm_min";
 
   const rawDuration = Number(input.duration);
   const duration = Number.isFinite(rawDuration)
     ? Math.max(0, Math.min(120_000, Math.trunc(rawDuration)))
-    : 4500;
+    : 2500;
 
   return {
-    id: cleanText(input.id) || nextId(),
-    title: cleanText(input.title),
-    message: cleanText(input.message),
-    type,
+    id: clean(input.id) || nextId(),
+    title: clean(input.title, 300),
+    text: clean(input.text ?? input.message),
     position,
+    design,
     duration,
-    icon: cleanText(input.icon) || undefined,
-    progress: input.progress !== false,
-    dedupeKey: cleanText(input.dedupeKey) || undefined,
+    richText: input.richText === true,
   };
 }
