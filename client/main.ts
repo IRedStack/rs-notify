@@ -42,15 +42,22 @@ function emitUi(event: string, payload: unknown): void {
 
   if (event === "notify:show") {
     try {
-      const value = payload as { id?: unknown; type?: unknown };
-      console.info(`[${RESOURCE}] UI notify emitted id=${String(value?.id ?? "")} type=${String(value?.type ?? "")}`);
+      const value = payload as { id?: unknown; design?: unknown; position?: unknown };
+      console.info(
+        `[${RESOURCE}] UI notify emitted id=${String(value?.id ?? "")} design=${String(value?.design ?? "")} position=${String(value?.position ?? "")}`,
+      );
     } catch {}
   }
 }
 
 function show(input: NotifyOptions): string | null {
-  if (!input.message?.trim()) return null;
   const payload = normalizeNotify(input);
+
+  if (!payload.title && !payload.text) {
+    console.warn(`[${RESOURCE}] Ignored empty notification payload.`);
+    return null;
+  }
+
   emitUi("notify:show", payload);
   return payload.id;
 }
