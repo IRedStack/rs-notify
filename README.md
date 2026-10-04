@@ -10,7 +10,7 @@ La risorsa usa l'architettura MafiaHub/HogwartsMP, ma mantiene il modello funzio
 - `duration: 0` = notifica persistente;
 - fade-in e fade-out;
 - posizioni `*_large`, `*_left`, `*_right`, `*_center`;
-- design `redm`, `redm_min`, `redm_3d`, `redm_kill`, `redm_prompt`;
+- design `rs`, `rs_min`, `rs_3d`, `rs_kill`, `rs_prompt`;
 - firma compatta `title, text, position, design, duration`.
 
 ## Build
@@ -32,7 +32,7 @@ Notify.notify(
   "Simple Notif",
   "Your message here",
   "bottom_large",
-  "redm_min",
+  "rs_min",
   9500
 );
 ```
@@ -44,7 +44,7 @@ Notify.notify(player, {
   title: "Simple Notif",
   text: "Your message here",
   position: "bottom_large",
-  design: "redm_min",
+  design: "rs_min",
   duration: 9500
 });
 ```
@@ -56,7 +56,7 @@ Notify.notify(player, {
   title: "Notification Fixed Point",
   text: "Premi E per interagire",
   position: "bottom_large",
-  design: "redm_min",
+  design: "rs_min",
   duration: 0
 });
 
@@ -84,21 +84,21 @@ bottom_center
 ## Designs
 
 ```text
-redm
-redm_min
-redm_3d
-redm_kill
-redm_prompt
+rs
+rs_min
+rs_3d
+rs_kill
+rs_prompt
 ```
 
 ## Test
 
 ```text
 /testnotify
-/testnotify redm
-/testnotify redm_min
-/testnotify redm_3d
-/testnotify redm_kill
-/testnotify redm_prompt
+/testnotify rs
+/testnotify rs_min
+/testnotify rs_3d
+/testnotify rs_kill
+/testnotify rs_prompt
 /testnotify all
 ```
