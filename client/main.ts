@@ -21,6 +21,7 @@ function ensureView(): number {
   if (view >= 0) {
     Web.on(view, "ready", () => {
       ready = true;
+      console.info(`[${RESOURCE}] WebView ready.`);
       while (pending.length) {
         const next = pending.shift();
         if (next) Web.emit(view, next.event, next.payload);
@@ -38,6 +39,13 @@ function emitUi(event: string, payload: unknown): void {
     return;
   }
   Web.emit(view, event, payload);
+
+  if (event === "notify:show") {
+    try {
+      const value = payload as { id?: unknown; type?: unknown };
+      console.info(`[${RESOURCE}] UI notify emitted id=${String(value?.id ?? "")} type=${String(value?.type ?? "")}`);
+    } catch {}
+  }
 }
 
 function show(input: NotifyOptions): string | null {
