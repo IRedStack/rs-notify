@@ -61,6 +61,8 @@ export function parseInput(raw: unknown): NotifyOptions | null {
     design: input.design,
     duration: Number(input.duration),
     richText: input.richText === true,
+    titleColor: clean(input.titleColor, 64) || undefined,
+    textColor: clean(input.textColor, 64) || undefined,
   };
 }
 
@@ -86,5 +88,7 @@ export function normalizeNotify(input: NotifyOptions): NotifyPayload {
     design,
     duration,
     richText: input.richText === true,
+    titleColor: clean(input.titleColor, 64) || undefined,
+    textColor: clean(input.textColor, 64) || undefined,
   };
 }
