@@ -415,22 +415,21 @@ body {
     Array.from(byId.keys()).forEach(removeNow);
   }
 
+  window.addEventListener("notify:show", function (event) {
+    show(event.detail || {});
+  });
+
+  window.addEventListener("notify:clear", function (event) {
+    var payload = event.detail || {};
+    if (payload.id) dismiss(String(payload.id));
+  });
+
+  window.addEventListener("notify:clearAll", function () {
+    clearAll();
+  });
+
   try {
-    if (typeof on === "function") {
-      on("notify:show", show);
-
-      on("notify:clear", function (payload) {
-        if (payload && payload.id) {
-          dismiss(String(payload.id));
-        }
-      });
-
-      on("notify:clearAll", clearAll);
-    }
-
-    if (typeof callEvent === "function") {
-      callEvent("ready", JSON.stringify({}));
-    }
+    callEvent("ready", JSON.stringify({}));
   } catch (_) {}
 })();
 </script>
