@@ -12,6 +12,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "RS-NormalDigits";
+  src: local("Arial");
+  font-style: normal;
+  font-weight: 400;
+  unicode-range: U+0030-0039;
+}
+
 * { box-sizing: border-box; }
 
 html,
@@ -26,7 +34,7 @@ body {
 }
 
 body {
-  font-family: "MilesdaneTrial", "Arial Narrow", Arial, sans-serif;
+  font-family: "RS-NormalDigits", "MilesdaneTrial", "Arial Narrow", Arial, sans-serif;
   pointer-events: none;
 }
 
@@ -54,7 +62,7 @@ body {
 }
 
 .notification .title {
-  font-family: "MilesdaneTrial", Impact, "Arial Narrow Bold", sans-serif;
+  font-family: "RS-NormalDigits", "MilesdaneTrial", Impact, "Arial Narrow Bold", sans-serif;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -64,7 +72,7 @@ body {
 
 .notification .text {
   margin-top: .35rem;
-  font-family: "MilesdaneTrial", Arial, Helvetica, sans-serif;
+  font-family: "RS-NormalDigits", "MilesdaneTrial", Arial, Helvetica, sans-serif;
   font-size: 1.1vw;
   line-height: 1.35;
 }
