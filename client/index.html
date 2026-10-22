@@ -267,10 +267,10 @@ body {
 
   function drainInventoryQueue() {
     while (inventoryActive.length < INVENTORY_LIMIT && inventoryQueue.length) {
-      var entry = inventoryQueue.shift();
-      var node = entry.node;
+      const entry = inventoryQueue.shift();
+      const node = entry.node;
       inventoryStack.appendChild(node);
-      var record = { node: node, timer: null, fadeTimer: null };
+      const record = { node: node, timer: null, fadeTimer: null };
       inventoryActive.push(record);
       var lifetime = Number(entry.duration);
       // Persistent alerts occupy a slot until explicitly cleared.
