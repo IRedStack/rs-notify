@@ -223,6 +223,16 @@ body {
 .inventory-change .inventory-delta.gain{color:#55dc82}
 .inventory-change .inventory-delta.loss{color:#f36a6a}
 .inventory-change .inventory-label{font:400 17px Arial,sans-serif;color:#fff;margin-top:5px;overflow-wrap:anywhere;text-shadow:0 1px 3px #000}
+
+/* Three independent inventory alerts, with FIFO overflow and no costly blur. */
+.inventory-notification-stack{position:absolute;right:20px;top:50%;transform:translateY(-50%);width:230px;max-width:25vw;display:flex;flex-direction:column;gap:9px;pointer-events:none}
+.inventory-notification-stack .notification.inventory-change{position:relative;right:auto;bottom:auto;top:auto;left:auto;width:100%;max-width:100%;flex:none;overflow:hidden;animation:rsFadeIn .25s ease forwards}
+.inventory-notification-stack .notification.inventory-change.leaving{animation:rsFadeOut .25s ease forwards}
+.inventory-progress-track{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.10)}
+.inventory-progress-fill{height:100%;width:100%;background:#d2ad67;transform-origin:left center;animation:rsInventoryCountdown var(--inventory-duration) linear forwards}
+.inventory-change .inventory-progress-fill.gain{background:#55dc82}
+.inventory-change .inventory-progress-fill.loss{background:#f36a6a}
+@keyframes rsInventoryCountdown{from{transform:scaleX(1)}to{transform:scaleX(0)}}
 </style>
 </head>
 <body>
@@ -236,6 +246,52 @@ body {
   var active = null;
   var dismissTimer = null;
   var removeTimer = null;
+  var inventoryQueue = [];
+  var inventoryActive = [];
+  var inventoryStack = document.createElement("div");
+  inventoryStack.className = "inventory-notification-stack";
+  root.appendChild(inventoryStack);
+  var INVENTORY_LIMIT = 3;
+  var INVENTORY_FADE_MS = 250;
+
+  function clearInventoryNotifications() {
+    inventoryQueue.length = 0;
+    inventoryActive.forEach(function (item) {
+      clearTimeout(item.timer);
+      clearTimeout(item.fadeTimer);
+      item.node.remove();
+    });
+    inventoryActive.length = 0;
+    inventoryStack.textContent = "";
+  }
+
+  function drainInventoryQueue() {
+    while (inventoryActive.length < INVENTORY_LIMIT && inventoryQueue.length) {
+      var entry = inventoryQueue.shift();
+      var node = entry.node;
+      inventoryStack.appendChild(node);
+      var record = { node: node, timer: null, fadeTimer: null };
+      inventoryActive.push(record);
+      var lifetime = Number(entry.duration);
+      // Persistent alerts occupy a slot until explicitly cleared.
+      if (lifetime > 0) {
+        record.timer = setTimeout(function () {
+          node.classList.add("leaving");
+          record.fadeTimer = setTimeout(function () {
+            node.remove();
+            var index = inventoryActive.indexOf(record);
+            if (index !== -1) inventoryActive.splice(index, 1);
+            drainInventoryQueue();
+          }, INVENTORY_FADE_MS);
+        }, lifetime);
+      }
+    }
+  }
+
+  function enqueueInventory(node, duration) {
+    inventoryQueue.push({ node: node, duration: duration });
+    drainInventoryQueue();
+  }
 
   function cancelTimers() {
     if (dismissTimer) clearTimeout(dismissTimer);
@@ -248,7 +304,7 @@ body {
     cancelTimers();
     if (active) active.remove();
     active = null;
-    root.textContent = "";
+    // Keep inventory alerts independent from standard notifications.
   }
 
   function setLimitedRichText(node, value) {
@@ -265,7 +321,7 @@ body {
   function show(payload) {
     if (!payload) return;
 
-    clearNow();
+    if (payload.variant !== "inventory_change") clearNow();
 
     var notification = document.createElement("div");
     notification.className =
@@ -300,16 +356,19 @@ body {
       label.className = "inventory-label";
       label.textContent = String(payload.text || "");
       notification.appendChild(label);
-      root.appendChild(notification);
-      active = notification;
       var inventoryDuration = Number(payload.duration);
-      if (Number.isFinite(inventoryDuration) && inventoryDuration > 0) {
-        dismissTimer = setTimeout(function () {
-          if (active !== notification) return;
-          notification.classList.add("leaving");
-          removeTimer = setTimeout(function () { if (active === notification) clearNow(); }, 2000);
-        }, inventoryDuration);
+      if (!Number.isFinite(inventoryDuration)) inventoryDuration = 2500;
+      inventoryDuration = Math.max(0, inventoryDuration);
+      if (inventoryDuration > 0) {
+        var track = document.createElement("div");
+        track.className = "inventory-progress-track";
+        var fill = document.createElement("div");
+        fill.className = "inventory-progress-fill " + (Number(payload.delta) > 0 ? "gain" : "loss");
+        fill.style.setProperty("--inventory-duration", inventoryDuration + "ms");
+        track.appendChild(fill);
+        notification.appendChild(track);
       }
+      enqueueInventory(notification, inventoryDuration);
       return;
     }
 
@@ -360,8 +419,28 @@ body {
     show(event.detail || {});
   });
 
-  window.addEventListener("notify:clear", clearNow);
-  window.addEventListener("notify:clearAll", clearNow);
+  window.addEventListener("notify:clear", function (event) {
+    var id = String(event?.detail?.id || "");
+    if (id) {
+      inventoryQueue = inventoryQueue.filter(function (entry) { return entry.node.dataset.id !== id; });
+      var match = inventoryActive.find(function (entry) { return entry.node.dataset.id === id; });
+      if (match) {
+        clearTimeout(match.timer);
+        clearTimeout(match.fadeTimer);
+        match.node.remove();
+        inventoryActive.splice(inventoryActive.indexOf(match), 1);
+        drainInventoryQueue();
+        return;
+      }
+      if (active?.dataset.id === id) clearNow();
+      return;
+    }
+    clearNow();
+  });
+  window.addEventListener("notify:clearAll", function () {
+    clearNow();
+    clearInventoryNotifications();
+  });
 
   try {
     callEvent("ready", JSON.stringify({}));
