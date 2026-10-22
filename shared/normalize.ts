@@ -63,6 +63,9 @@ export function parseInput(raw: unknown): NotifyOptions | null {
     richText: input.richText === true,
     titleColor: clean(input.titleColor, 64) || undefined,
     textColor: clean(input.textColor, 64) || undefined,
+    variant: input.variant === "inventory_change" ? "inventory_change" : undefined,
+    icon: clean(input.icon, 512) || undefined,
+    delta: Number.isFinite(Number(input.delta)) ? Math.trunc(Number(input.delta)) : undefined,
   };
 }
 
@@ -90,5 +93,8 @@ export function normalizeNotify(input: NotifyOptions): NotifyPayload {
     richText: input.richText === true,
     titleColor: clean(input.titleColor, 64) || undefined,
     textColor: clean(input.textColor, 64) || undefined,
+    variant: input.variant === "inventory_change" ? "inventory_change" : undefined,
+    icon: clean(input.icon, 512) || undefined,
+    delta: Number.isFinite(Number(input.delta)) ? Math.trunc(Number(input.delta)) : undefined,
   };
 }
