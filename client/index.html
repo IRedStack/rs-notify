@@ -100,7 +100,7 @@ body {
   background: transparent;
 }
 
-.rs_kill .text::before {
+.rs_kill:not(.inventory-change) .text::before {
   content: "☠";
   display: inline-block;
   margin-right: 10px;
@@ -215,6 +215,14 @@ body {
   .notification .title { font-size: 34px; }
   .notification .text { font-size: 16px; }
 }
+
+.notification.inventory-change{width:230px;max-width:25vw;padding:12px 14px;background:linear-gradient(90deg,rgba(7,12,18,.82),rgba(7,12,18,.16));border-left:2px solid rgba(210,172,89,.65);border-radius:8px;text-align:left;pointer-events:none}
+.inventory-change .inventory-main{display:flex;align-items:center;gap:12px}
+.inventory-change .inventory-icon{width:53px;height:53px;object-fit:contain;flex:none;animation:none!important;transform:none!important}
+.inventory-change .inventory-delta{font:700 29px Arial,sans-serif;letter-spacing:0}
+.inventory-change .inventory-delta.gain{color:#55dc82}
+.inventory-change .inventory-delta.loss{color:#f36a6a}
+.inventory-change .inventory-label{font:400 17px Arial,sans-serif;color:#fff;margin-top:5px;overflow-wrap:anywhere;text-shadow:0 1px 3px #000}
 </style>
 </head>
 <body>
@@ -267,6 +275,43 @@ body {
       (payload.design || "rs_min");
 
     notification.dataset.id = String(payload.id || "");
+
+
+    if (payload.variant === "inventory_change" && Number.isFinite(Number(payload.delta)) && Number(payload.delta) !== 0) {
+      notification.classList.add("inventory-change");
+      var main = document.createElement("div");
+      main.className = "inventory-main";
+      var icon = String(payload.icon || "");
+      if (icon.startsWith("fw://resources/rs-inventory/dist/assets/") && !/[<>"'\\]/.test(icon)) {
+        var image = document.createElement("img");
+        image.className = "inventory-icon";
+        image.src = icon;
+        image.alt = "";
+        image.draggable = false;
+        image.onerror = function () { image.style.visibility = "hidden"; };
+        main.appendChild(image);
+      }
+      var amount = document.createElement("span");
+      amount.className = "inventory-delta " + (Number(payload.delta) > 0 ? "gain" : "loss");
+      amount.textContent = (Number(payload.delta) > 0 ? "+" : "") + String(Math.trunc(Number(payload.delta)));
+      main.appendChild(amount);
+      notification.appendChild(main);
+      var label = document.createElement("div");
+      label.className = "inventory-label";
+      label.textContent = String(payload.text || "");
+      notification.appendChild(label);
+      root.appendChild(notification);
+      active = notification;
+      var inventoryDuration = Number(payload.duration);
+      if (Number.isFinite(inventoryDuration) && inventoryDuration > 0) {
+        dismissTimer = setTimeout(function () {
+          if (active !== notification) return;
+          notification.classList.add("leaving");
+          removeTimer = setTimeout(function () { if (active === notification) clearNow(); }, 2000);
+        }, inventoryDuration);
+      }
+      return;
+    }
 
     if (payload.title) {
       var title = document.createElement("div");
