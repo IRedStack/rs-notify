@@ -30,6 +30,9 @@ export interface NotifyOptions {
   richText?: boolean;
   titleColor?: string;
   textColor?: string;
+  variant?: "inventory_change";
+  icon?: string;
+  delta?: number;
 }
 
 export interface NotifyPayload {
@@ -42,4 +45,7 @@ export interface NotifyPayload {
   richText: boolean;
   titleColor?: string;
   textColor?: string;
+  variant?: "inventory_change";
+  icon?: string;
+  delta?: number;
 }
